@@ -109,3 +109,40 @@ select * from seanss;
 INSERT INTO kohatuup(tuup, hind) VALUES ('cool', 5), ('not cool', 2);
 INSERT INTO seanss(film, filmikeel, saal, aeg, kuupaev) VALUES(1, 1, 1, '13:00', '2025-01-16'), (2, 2, 2, '15:00', '2025-01-16'), (3, 3, 1, '11:00', '2025-01-16');
 select * from seanss;
+
+
+
+
+
+
+
+------------------------- toodeladu
+CREATE DATABASE toodeladu;
+use toodeladu;
+CREATE TABLE kategooriad(
+id int primary key identity(1,1),
+kategooria varchar(85),
+);
+
+CREATE TABLE toode(
+id int primary key identity(1,1),
+toodenimetus varchar(65),
+kogus int,
+hind int,
+pilt text,
+kategooria_id int,
+FOREIGN KEY (kategooria_id) REFERENCES kategooriad(id)
+);
+CREATE TABLE roll(
+id int primary key identity(1,1),
+roll varchar(60)
+);
+CREATE TABLE kasutaja(
+id int primary key identity(1,1),
+nimi varchar(80),
+salasona varchar(80),
+vanus int,
+roll int,
+pilt text,
+FOREIGN KEY (roll) REFERENCES roll(id)
+);
