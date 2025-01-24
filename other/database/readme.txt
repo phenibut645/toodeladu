@@ -1,0 +1,2 @@
+﻿CONNECTION - "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=zxcforum;Integrated Security=True" ( TTHK )
+CONNECTION - "Data Source=DESKTOP-O697USL;Initial Catalog=zxcforum;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;" ( HOME )

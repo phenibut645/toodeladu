@@ -1,0 +1,111 @@
+﻿drop database zxcforum
+CREATE TABLE saalituup(
+id int primary key identity(1,1),
+tuup varchar(70)
+);
+CREATE TABLE skeem(
+id int primary key identity(1,1),
+nimi varchar(80),
+riida_arv int,
+veerg_arv int
+);
+CREATE TABLE saal(
+id int primary key identity(1,1),
+saalituup int,
+skeem int,
+nimetus varchar(50),
+FOREIGN KEY(saalituup) REFERENCES saalituup(id),
+FOREIGN KEY (skeem) REFERENCES skeem(id)
+);
+CREATE TABLE zanr(
+id int primary key identity(1,1),
+zanr varchar(80)
+);
+CREATE TABLE film(
+id int primary key identity(1,1),
+nimetus varchar(80),
+kirjeldus text,
+aasta int,
+poster text,
+kestvus varchar(50)
+);
+CREATE TABLE filmizanris(
+id int primary key identity(1,1),
+film int,
+zanr int,
+FOREIGN KEY (film) REFERENCES film(id),
+FOREIGN KEY (zanr) REFERENCES zanr(id)
+);
+CREATE TABLE filmikeel(
+id int primary key identity(1,1),
+keel varchar(80)
+);
+CREATE TABLE seanss(
+id int primary key identity(1,1),
+film int,
+filmikeel int,
+saal int,
+aeg varchar(5),
+kuupaev date,
+FOREIGN KEY (film) REFERENCES film(id),
+FOREIGN KEY (filmikeel) REFERENCES filmikeel(id),
+FOREIGN KEY (saal) REFERENCES saal(id)
+);
+CREATE TABLE kohatuup(
+id int primary key identity(1,1),
+tuup varchar(60),
+hind decimal
+);
+CREATE TABLE koht(
+id int primary key identity(1,1),
+coord_x int,
+coord_y int,
+kohatuup int,
+skeem int,
+FOREIGN KEY (kohatuup) REFERENCES kohatuup(id),
+FOREIGN KEY (skeem) REFERENCES skeem(id)
+);
+CREATE TABLE roll(
+id int primary key identity(1,1),
+roll varchar(60)
+);
+CREATE TABLE kasutaja(
+id int primary key identity(1,1),
+nimi varchar(80),
+salasona varchar(80),
+vanus int,
+roll int,
+pilt text,
+FOREIGN KEY (roll) REFERENCES roll(id)
+);
+CREATE TABLE broneeritudKoht(
+id int primary key identity(1,1),
+koht int,
+kasutaja int,
+seanss int,
+FOREIGN KEY (koht) REFERENCES koht(id),
+FOREIGN KEY (kasutaja) REFERENCES kasutaja(id),
+FOREIGN KEY (seanss) REFERENCES seanss(id)
+);
+
+INSERT INTO roll(roll) VALUES ('kasutaja');
+INSERT INTO roll(roll) VALUES ('admin');
+
+INSERT INTO kasutaja(nimi, vanus, roll, pilt, salasona) VALUES('ZXCCAT', NULL, 1, 'zxccat.jpg', 'lolkek');
+
+INSERT INTO film(nimetus, kirjeldus, aasta, poster, kestvus) VALUES('Joker 2', 'From acclaimed writer/director/producer Todd Phillips comes “Joker: Folie À Deux,” the much-anticipated follow-up to 2019’s Academy Award-winning “Joker,” which earned more than $1 billion at the global box office and remains the highest-grossing R-rated film of all time. The new film stars Joaquin Phoenix once again in his Oscar-winning dual role as Arthur Fleck/Joker, opposite Oscar winner Lady Gaga (“A Star Is Born”).', 2024, 'joker.jpg', '2h 18min'),
+('The Batman', 'Two years of stalking the streets as the Batman (Robert Pattinson), striking fear into the hearts of criminals, has led Bruce Wayne deep into the shadows of Gotham City. With only a few trusted allies—Alfred Pennyworth (Andy Serkis), Lt. James Gordon (Jeffrey Wright)—amongst the city’s corrupt network of officials and high-profile figures, the lone vigilante has established himself as the sole embodiment of vengeance amongst his fellow citizens.', 2022, 'the-batman.jpg', '2h 56min'),
+('Drive', 'A mysterious Hollywood action film stuntman gets in trouble with gangsters when he tries to help his neighbors husband rob a pawn shop while serving as his getaway driver.', 2011, 'drive.jpg', '1h 40min');
+INSERT INTO filmikeel(keel) VALUES ('vene keel'), ('inglise keel'), ('eesti keel');
+INSERT INTO zanr(zanr) VALUES ('Drama'), ('Action'), ('Car Action'), ('One-Person Army Action'), ('Crime'), ('Musical'), ('Drama');
+INSERT INTO filmizanris(film, zanr) VALUES (1, 1), (1, 6), (1, 5), (2, 1), (2, 2), (3, 3), (3, 4), (3, 2), (3, 1);
+INSERT INTO kasutaja(nimi, vanus, roll, pilt, salasona) VALUES('root', NULL, 2, 'zxccat.jpg', 'root');
+INSERT INTO saalituup(tuup) VALUES ('vaike'),('suur');
+INSERT INTO saalituup(tuup) VALUES ('vaga suur');
+INSERT INTO skeem(nimi, riida_arv, veerg_arv) VALUES ('mega eshkere', 5, 5),('freak', 6, 6);
+INSERT INTO skeem(nimi, riida_arv, veerg_arv) VALUES ('vladislav stepler', 7, 7);
+insert into saal(saalituup, skeem, nimetus) values (1, 1, 'ice zxc'), (2, 2, 'not ice'), (3,3, 'not ice');
+select * from seanss;
+INSERT INTO kohatuup(tuup, hind) VALUES ('cool', 5), ('not cool', 2);
+INSERT INTO seanss(film, filmikeel, saal, aeg, kuupaev) VALUES(1, 1, 1, '13:00', '2025-01-16'), (2, 2, 2, '15:00', '2025-01-16'), (3, 3, 1, '11:00', '2025-01-16');
+select * from seanss;
