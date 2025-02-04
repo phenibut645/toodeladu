@@ -8,18 +8,14 @@ using zxcforum.core.interfaces;
 
 namespace zxcforum.core.models.database
 {
-    public class Kasutaja: Table, ITable
+    public class Ladu: Table, ITable
     {
-        public string tableName { get; set; } = "kasutajad";
-        public Kasutaja() { }
+        public string tableName { get; set; } = "ladu";
+        public Ladu() { }
         public override Dictionary<string, string> _data { get; set; } = new Dictionary<string, string>()
         {
             {"id", null },
-            {"nimi", null },
-            {"salasona", null},
-            {"role", null },
-            {"pilt", null },
-            {"vanus", null }
+            {"nimetus", null },
         };
 
     }

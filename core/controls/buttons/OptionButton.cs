@@ -35,10 +35,12 @@ namespace zxcforum.core.controls.buttons
         public int OptionHeight { get; set; }
         public int IconFrameSize { get; set; } = 61;
         public string FieldName { get; set; }
+        public string SpecialName { get; set; } = null;
 
-        public OptionButton(T record, string fieldName, int sizeX)
+        public OptionButton(T record, string fieldName, int sizeX, string specialName = null)
         {
             OptionWidth = sizeX + IconFrameSize;
+            SpecialName = specialName;
             FieldName = fieldName;
             OptionHeight = 61;
             this.ClientSize = new Size(OptionWidth + IconFrameSize, OptionHeight);
@@ -102,7 +104,7 @@ namespace zxcforum.core.controls.buttons
 
             OptionNameValue = new Label();
             Console.WriteLine(Record[FieldName]);
-            OptionNameValue.Text = Record[FieldName];
+            OptionNameValue.Text = SpecialName == null ? Record[FieldName] : SpecialName;
             OptionNameValue.Font = DefaultFonts.GetFont(23);
             OptionNameValue.ForeColor = ColorManagment.LightOptionsText;
             OptionNameValue.BackColor = ColorManagment.InvisibleBackGround;

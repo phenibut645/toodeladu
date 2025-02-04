@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using zxcforum.core.enums;
 using zxcforum.core.models;
 using zxcforum.core.interfaces;
 using zxcforum.core.models.database;
-using System.Runtime.InteropServices;
 
 
 namespace zxcforum.core.utils
@@ -19,7 +13,7 @@ namespace zxcforum.core.utils
 
     public static class DBHandler
     {
-        public static string ConnectionString { get; private set; } = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=zxcforum;Integrated Security=True";
+        public static string ConnectionString { get; private set; } = @"Data Source=DESKTOP-O697USL;Initial Catalog=toodeladu;Integrated Security=True";
 
         public static User CheckUser(string username, string password)
         {
@@ -66,6 +60,7 @@ namespace zxcforum.core.utils
             using(SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
+                Console.WriteLine($"queryyyyyyyyyyyy, {query}");
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -279,7 +274,18 @@ namespace zxcforum.core.utils
             string tableName = new T().tableName;
             string sql = $"DELETE FROM {tableName} WHERE id = {id}";
             MakeQuery(sql);
-    }
+        }
+        public static List<SelectOption> GetWarehouses(int toodeId)
+        {
+            List<Ladu> laod = GetTableData<Ladu>();
+            List<SelectOption> returnList = new List<SelectOption>();
+            foreach(Ladu ladu in laod)
+            {
+                SelectOption option = new SelectOption(ladu["id"], $"{ladu["nimetus"]}: { GetSingleResponse($"SELECT kogus FROM taidis WHERE ladu = {ladu["id"]} AND toode = {toodeId}", "kogus")}");
+                returnList.Add(option);
+            }
+            return returnList;
+        }
     }
     
 }

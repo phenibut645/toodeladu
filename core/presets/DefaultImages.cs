@@ -16,6 +16,7 @@ namespace zxcforum.core.utils
         public static Image GetAvatar(User user)
         {
             Console.WriteLine($"{user.picture} PICTURE");
+            
             if(user.picture != "") return Image.FromFile(Path.Combine(DefaultPaths.AvatarsPath, user.picture));
             else return Image.FromFile(Path.Combine(DefaultPaths.DefaultImagesPath, "profile.png"));
         }
@@ -25,10 +26,17 @@ namespace zxcforum.core.utils
             if(name != "") return Image.FromFile(Path.Combine(DefaultPaths.AvatarsPath, name));
             else return Image.FromFile(Path.Combine(DefaultPaths.DefaultImagesPath, "profile.png"));
         }
-        public static Image GetPoster(Film film)
+        public static Image GetProductImage(string name)
         {
-            if(film["poster"] != "NULL") return Image.FromFile(Path.Combine(DefaultPaths.PostersPath, film["poster"]));
-            else return Image.FromFile(Path.Combine(DefaultPaths.DefaultImagesPath, "poster.jpg"));
+            try
+            {
+                if(name != "") return Image.FromFile(Path.Combine(DefaultPaths.ProductsPath, name));
+                else return Image.FromFile(Path.Combine(DefaultPaths.ProductsPath, "default.png"));
+            }
+            catch
+            {
+                return Image.FromFile(Path.Combine(DefaultPaths.ProductsPath, "default.png"));
+            }
         }
         public static Image GetDefaultImage(string name)
         {

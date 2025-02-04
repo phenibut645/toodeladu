@@ -27,6 +27,8 @@ namespace zxcforum.core.controls
         public int GapBetweenIconAndFiled { get; set; } = 10;
         public Action<SelectControl> OnSelect { get; set; }
         public Action<int, bool> OnShowOrHide { get; set;}
+        private int FontSize { get; set; } = 22;
+        private int ButtonFontSize { get; set; } = 17;
 
         private SelectOptionButton _selectedOption;
         public SelectOptionButton SelectedOption
@@ -47,10 +49,12 @@ namespace zxcforum.core.controls
             }
         }
         public bool IsDownBarShowed { get; private set; }
-        public SelectControl(List<int> size, List<SelectOption> options, int downBarSizeY = 100, int gapBetweenOptions = 7)
+        public SelectControl(List<int> size, List<SelectOption> options, int downBarSizeY = 100, int gapBetweenOptions = 7, int fontSize = 22, int buttonFontSize = 17)
         {
             GapBetweenOptions = gapBetweenOptions;
+            FontSize = fontSize;
             FieldSize = size;
+            ButtonFontSize = buttonFontSize;
             this.Size = new Size(FieldSize[0], FieldSize[1]);
             DownBarSizeY = downBarSizeY;
             InitAll();
@@ -84,13 +88,13 @@ namespace zxcforum.core.controls
             
             if (IsDownBarShowed)
             {
-                OnShowOrHide(this.DownBarPanel.Height, false);
+                if(OnShowOrHide != null) OnShowOrHide(this.DownBarPanel.Height, false);
                 HideDownBar();
                 Console.WriteLine("HIDE");
             }
             else
             {
-                OnShowOrHide(this.DownBarPanel.Height, true);
+                if(OnShowOrHide != null) OnShowOrHide(this.DownBarPanel.Height, true);
                 ShowDownBar();
                 Console.WriteLine("SHOW");
             }
@@ -125,7 +129,7 @@ namespace zxcforum.core.controls
             MoreIcon.BackColor = ColorManagment.InvisibleBackGround;
 
             FieldValueLabel = new Label();
-            FieldValueLabel.Font = DefaultFonts.GetKanitFont(22);
+            FieldValueLabel.Font = DefaultFonts.GetKanitFont(FontSize);
             FieldValueLabel.ForeColor = Color.White;
             FieldValueLabel.BackColor = ColorManagment.InvisibleBackGround;
             FieldValueLabel.Text = "Vali";
@@ -172,7 +176,7 @@ namespace zxcforum.core.controls
                 Console.WriteLine(option.ExternalText);
                 SelectOptionButton button = new SelectOptionButton(option);
                 button.Size = new Size(FieldSize[0], 37);
-                button.Font = DefaultFonts.GetKanitFont(17);
+                button.Font = DefaultFonts.GetKanitFont(ButtonFontSize);
                 button.ForeColor = Color.White;
                 button.FlatStyle = FlatStyle.Flat;
                 button.FlatAppearance.BorderSize = 0;

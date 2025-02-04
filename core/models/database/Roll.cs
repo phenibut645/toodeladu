@@ -9,7 +9,7 @@ namespace zxcforum.core.models.database
 {
     public class Roll: Table, ITable
     {
-        public string tableName { get; set; } = "roll";
+        public string tableName { get; set; } = "roles";
         public Roll() { }
         public override Dictionary<string, string> _data { get; set; } = new Dictionary<string, string>()
         {

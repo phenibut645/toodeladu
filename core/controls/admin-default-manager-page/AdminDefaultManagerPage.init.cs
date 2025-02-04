@@ -11,11 +11,13 @@ using System.Windows.Forms;
 using System.Drawing;
 using zxcforum.core.models;
 using zxcforum.core.enums;
+using zxcforum.core.context;
 
 namespace zxcforum.core.controls
 {
     public partial class AdminDefaultManagerPage<T> : UserControl where T: Table, ITable, new()
     {
+        string FileName { get; set; }
         public void InitAll()
         {
             InitSelectPanel();
@@ -50,17 +52,19 @@ namespace zxcforum.core.controls
             AddPanel.BackColor = ColorManagment.DarkerDefaultPanelColor;
             SelectPanel.Controls.Add(AddPanel);
 
-            AddButton = new Button();
-            AddButton.Size = new Size(47, 47);
-            AddButton.BackgroundImage = DefaultImages.GetDefaultImage("plus-hexagon.png");
-            AddButton.BackgroundImageLayout = ImageLayout.Zoom;
-            AddButton.BackColor = ColorManagment.InvisibleBackGround;
-            AddButton.FlatStyle = FlatStyle.Flat;
-            AddButton.FlatAppearance.BorderSize = 0;
-            AddButton.Location = new Point(AddPanel.Width / 2 - AddButton.Width / 2, AddPanel.Height / 2 - AddButton.Height / 2);
-            AddButton.Click += AddButton_clicked;
-            AddPanel.Controls.Add(AddButton);
-
+            if (!IsTaidis)
+            {
+                AddButton = new Button();
+                AddButton.Size = new Size(47, 47);
+                AddButton.BackgroundImage = DefaultImages.GetDefaultImage("plus-hexagon.png");
+                AddButton.BackgroundImageLayout = ImageLayout.Zoom;
+                AddButton.BackColor = ColorManagment.InvisibleBackGround;
+                AddButton.FlatStyle = FlatStyle.Flat;
+                AddButton.FlatAppearance.BorderSize = 0;
+                AddButton.Location = new Point(AddPanel.Width / 2 - AddButton.Width / 2, AddPanel.Height / 2 - AddButton.Height / 2);
+                AddButton.Click += AddButton_clicked;
+                AddPanel.Controls.Add(AddButton);
+            }
         }
         public void InitButtons()
         {
@@ -74,7 +78,13 @@ namespace zxcforum.core.controls
                 {
                     Console.WriteLine($"key: {key}, value: {record[key]}");
                 }
-                OptionButton<T> button = new OptionButton<T>(record, FieldName, OptionSize);
+                OptionButton<T> button;
+                if (IsTaidis)
+                {
+                    Taidis taidis = record as Taidis;
+                    button = new OptionButton<T>(record, FieldName, OptionSize, specialName: $"Ladu: '{DBHandler.GetSingleResponse($"SELECT nimetus FROM ladu WHERE id = {taidis["ladu"]}", "nimetus")}'; Toode: '{DBHandler.GetSingleResponse($"SELECT nimetus FROM toode WHERE id = {taidis["toode"]}", "nimetus")}'");
+                }
+                else button = new OptionButton<T>(record, FieldName, OptionSize);
                 button.Location = new Point(SelectPanel.Width / 2 - button.Width / 2, currentY);
                 OptionsPanel.Controls.Add(button);
                 button.AddClickMethod(Selected);
@@ -101,7 +111,7 @@ namespace zxcforum.core.controls
             List<SelectOption> options = new List<SelectOption>();
             Type type = TablesManagment.GetRecordType(tableName);
             var method = typeof(DBHandler).GetMethod("GetTableData");
-            
+            Console.WriteLine($"typeeee {tableName}");
             var genericMethod = method.MakeGenericMethod(type);
             object result = genericMethod.Invoke(null, null);
 
@@ -133,6 +143,15 @@ namespace zxcforum.core.controls
             foreach(string field in fields)
             {
                 if(field == "id") continue;
+                if(field == "pilt")
+                {
+                    AvatarChangeAbility ava = new AvatarChangeAbility(FormAppContext.CurrentUser, true);
+                    ava.onProductImage += (string fileName) => FileName = fileName;
+                    ava.Location = new Point(SelectedPanel.Width / 2 - ava.Width / 2, currentY);
+                    this.SelectedPanel.Controls.Add(ava);
+                    currentY += ava.Height + this.GapBetweenButtons;
+                    continue;
+                }
                 List<string> response = DBHandler.CheckForForeign<T>(field);
                 dynamic advancedOption;
                 if(response.Count != 0) GenerateSelect(field, response[0], out advancedOption, changeAvailable:false, isItForAddPanel: true);
@@ -150,11 +169,9 @@ namespace zxcforum.core.controls
             SelectedInputsPanel.AutoScroll = true;
             SelectedInputsPanel.BackColor = ColorManagment.DefaultPanelColor;
             SelectedPanel.Controls.Add(SelectedInputsPanel);
-
+            
             InitDownOptionPanel();
             InitDownSelectedButton(isItForAddPanel);
-            
-
         }
         public void InitDownOptionPanel()
         {
@@ -180,7 +197,12 @@ namespace zxcforum.core.controls
         }
         public void DeleteButton_clicked(object sender, EventArgs e)
         {
+            if (IsToode)
+            {
+                DBHandler.MakeQuery($"DELETE FROM taidis WHERE toode = {SelectedButton.Record["id"]}");
+            }
             DBHandler.DeleteRecord<T>(int.Parse(SelectedButton.Record["id"]));
+
             ReDraw();
         }
         public void AddButton_clicked(object sender, EventArgs e)
@@ -197,6 +219,20 @@ namespace zxcforum.core.controls
             {
                 if(control is IAdvanced adv)
                 {
+                    Console.WriteLine($"111111111111111111111111111111111111111pilttt                 , {adv.Field}");
+                    if(adv.Field == "pilt" && IsToode)
+                    {
+                        Console.WriteLine("111111111111111111111111111111111111111pilttt");
+                        if(FileName == null)
+                        {
+                            MessageBox.Show("Vali pilt", "Error");
+                            return;
+                        }
+                        Console.WriteLine("222222222222222222222222222222222222222222222222222222222222222");
+                        Console.WriteLine($"File name: {FileName}");
+                        record[adv.Field] = FileName;
+                        continue;
+                    }
                     if(adv.CurrentValue != "" && adv.CurrentValue != null) record[adv.Field] = adv.CurrentValue;
                     else
                     {
@@ -204,9 +240,34 @@ namespace zxcforum.core.controls
                         return;
                     }
                 }
+                else if(control is AvatarChangeAbility ava)
+                {
+                    if(FileName == null)
+                    {
+                        MessageBox.Show("Vali pilt", "Error");
+                        return;
+                    }
+                    record["pilt"] = FileName;
+                }
             }
 
-            DBHandler.AddRecord<T>(record);
+            DBHandler.AddRecord(record);
+            Console.WriteLine("LADDDDDDDDDDDDOOOOOOOO");
+            if (IsToode)
+            {
+                Toode toode = DBHandler.GetRecord<Toode>(new List<WhereField>(){ new WhereField("nimetus", record["nimetus"])});
+                Console.WriteLine("LADDDDDDDDDDDDOOOOOOOO");
+                List<Ladu> laod = DBHandler.GetTableData<Ladu>();
+                foreach(Ladu ladu in laod)
+                {
+                    Console.WriteLine("1000-7");
+                    Taidis td = new Taidis();
+                    td["ladu"] = ladu["id"];
+                    td["toode"] = toode["id"];
+                    td["kogus"] = "0";
+                    DBHandler.AddRecord(td);
+                }
+            }
             ReDraw();
         }
         public void GenerateField(string fieldName)
@@ -218,15 +279,21 @@ namespace zxcforum.core.controls
             ClearSelectedPanel();
             InitRightPanel();
             List<string> fields;
-            DownSelectedPanelButton.Image =  DefaultImages.GetDefaultImage(type == PanelType.Add ? "check.png" : "trash.png");
+            if (!IsTaidis)
+            {
+                DownSelectedPanelButton.Image =  DefaultImages.GetDefaultImage(type == PanelType.Add ? "check.png" : "trash.png");
+                if(type == PanelType.Add) DownSelectedPanelButton.Click += AddButton_clicked;
+                else DownSelectedPanelButton.Click += DeleteButton_clicked;
+            }
+            else DownSelectedPanelButton.Dispose();
+            
             fields = type == PanelType.Add ? new T().GetKeys() : SelectedButton.Record.GetKeys();
-            if(type == PanelType.Add) DownSelectedPanelButton.Click += AddButton_clicked;
-            else DownSelectedPanelButton.Click += DeleteButton_clicked;
+            
             
             int currentY = this.StartOptionPositionY;
             foreach(string field in fields)
             {
-                if(field == "id") continue;
+                if(field == "id" || field == "ladu" || field == "toode") continue;
                 List<string> response = DBHandler.CheckForForeign<T>(field);
                 dynamic advancedOption;
                 if(response.Count != 0) GenerateSelect(field, response[0], out advancedOption);

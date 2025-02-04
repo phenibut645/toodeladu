@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing.Design;
 
 namespace zxcforum.core.models
 {
@@ -35,13 +36,15 @@ namespace zxcforum.core.models
         }
         public static User ConvertUser(Kasutaja kasutaja)
         {
-            string role = DBHandler.GetSingleResponse($"SELECT roll FROM roll WHERE id = {kasutaja["roll"]}", "roll");
-            Roll roleObject =DBHandler.GetRecord<Roll>(new List<WhereField>() { new WhereField("id", kasutaja["roll"])});
+            
+            string role = DBHandler.GetSingleResponse($"SELECT roll FROM roles WHERE id = {kasutaja["role"]}", "roll");
+            Roll roleObject =DBHandler.GetRecord<Roll>(new List<WhereField>() { new WhereField("id", kasutaja["role"])});
             Console.WriteLine($"ROLE = {roleObject["roll"]}");
             User user = new User(kasutaja["nimi"], kasutaja["salasona"], (Rolls)RolesManagment.GetRole(role));
             user.id = int.Parse(kasutaja["id"]);
             user.picture = kasutaja["pilt"];
             user.vanus = kasutaja["vanus"];
+            Console.WriteLine($"kasutajaaa, {user.id}, {user.name}");
             return user;
         }
     }

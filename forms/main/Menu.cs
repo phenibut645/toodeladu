@@ -19,7 +19,7 @@ namespace zxcforum.forms.main
         public Menu()
         {
             this.Icon = new Icon(Path.Combine(DefaultPaths.DefaultImagesPath, "icon.ico"));
-            this.Text = "CookieKino";
+            this.Text = "Shop";
             this.BackColor = ColorManagment.BackGroundColor;
             this.ClientSize = new Size(1720, 980);
 

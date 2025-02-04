@@ -13,10 +13,17 @@ namespace zxcforum.core.utils
         {
             Console.WriteLine(tableName);
 
-            if(tableName == "roll")
+            if(tableName == "roles")
             {
-                Console.WriteLine("roll YEEEEEEEEE");
                 return typeof(Roll);
+            }
+            if(tableName == "ladu")
+            {
+                return typeof(Ladu);
+            }
+            if(tableName == "toode")
+            {
+                return typeof(Toode);
             }
             return null;
         }

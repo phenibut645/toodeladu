@@ -15,15 +15,12 @@ namespace zxcforum.core.presets
     {
         public static List<PageDataTemplate> Templates { get; set; } = new List<PageDataTemplate>()
         { 
-            new PageDataTemplate(new Kava(), new List<Rolls>(){Rolls.User, Rolls.Guest }, HeaderButtonType.Default, buttonName: "Kava", icon:DefaultImages.GetHomeIcon()),
-            // new PageDataTemplate(new Piletid(), new List<Rolls>(){Rolls.User}, HeaderButtonType.Default, buttonName:"Piletid", icon:DefaultImages.GetTicketsIcon()),
-            new PageDataTemplate(new Filmid(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Filmid", icon:DefaultImages.GetMoviesIcon()),
+            new PageDataTemplate(new Shop(), new List<Rolls>(){Rolls.User, Rolls.Guest, Rolls.Admin }, HeaderButtonType.Default, buttonName: "Shop", icon:DefaultImages.GetHomeIcon()),
             new PageDataTemplate(new Kasutajad(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Kasutajad", icon:DefaultImages.GetUsersIcon()),
-            new PageDataTemplate(new Seansid(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Seansid", icon:DefaultImages.GetSessionIcon()),
-            new PageDataTemplate(new Zanrid(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Zanrid", icon:DefaultImages.GetGenreIcon()),
-            new PageDataTemplate(new Saalid(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Saalid", icon:DefaultImages.GetHallIcon()),
-            new PageDataTemplate(new SaaliTuup(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Saalid tüüp", icon:DefaultImages.GetHallIcon()),
-            new PageDataTemplate(new BroneeritudKoht(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Broneeritud kohad", icon:DefaultImages.GetHallIcon()),
+            new PageDataTemplate(new TaidisPage(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Taidis", icon:DefaultImages.GetSessionIcon()),
+            new PageDataTemplate(new ToodePage(), new List<Rolls>(){Rolls.Admin}, HeaderButtonType.Default, buttonName:"Toode", icon:DefaultImages.GetTicketsIcon()),
+            new PageDataTemplate(new Korv(), new List<Rolls>(){Rolls.User, Rolls.Admin}, HeaderButtonType.Default, buttonName:"Korv", icon:DefaultImages.GetTicketsIcon()),
+            new PageDataTemplate(new LaduPage(), new List<Rolls>() { Rolls.Admin }, HeaderButtonType.Default, buttonName:"Laod", icon:DefaultImages.GetGenreIcon()),
             new PageDataTemplate(new More(), new List<Rolls>() { Rolls.Admin, Rolls.User, Rolls.Guest }, HeaderButtonType.More),
             new PageDataTemplate(new Profile(), new List<Rolls>() { Rolls.Admin, Rolls.User }, HeaderButtonType.Profile)
 

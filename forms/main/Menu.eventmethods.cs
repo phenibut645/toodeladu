@@ -30,5 +30,9 @@ namespace zxcforum.forms.main
             Console.WriteLine("Logged in");
             this.RefreshForm();
         }
+        public void RefreshRequired()
+        {
+            this.RefreshForm();
+        }
     }
 }

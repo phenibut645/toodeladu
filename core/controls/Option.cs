@@ -48,8 +48,8 @@ namespace zxcforum.core.controls
             OptionValue = new Label();
             if(field == "roll")
             {
-                Console.WriteLine($"role = {RolesManagment.GetRole(int.Parse(record[field])).ToString()}");
-                OptionValue.Text = RolesManagment.GetRole(int.Parse(record[field])).ToString();
+                Console.WriteLine($"role = {RolesManagment.GetRole(int.Parse(record["role"])).ToString()}");
+                OptionValue.Text = RolesManagment.GetRole(int.Parse(record["role"])).ToString();
             }
             else OptionValue.Text = record[field];
             

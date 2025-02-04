@@ -17,12 +17,16 @@ namespace zxcforum.core.controls
 {
     public partial class AvatarChangeAbility : UserControl
     {
+        public delegate void GetNewProductImage(string fileName);
+        public event GetNewProductImage onProductImage;
         public PictureBox Avatar { get; private set; }
         public Panel ButtonContainer { get; private set; } = new Panel();
         public Button ChangeButton { get; private set; }
         public User User { get; private set; }
-        public AvatarChangeAbility(User user)
+        public bool IsForProduct { get; set; }
+        public AvatarChangeAbility(User user, bool isForProduct = false)
         {
+            IsForProduct = isForProduct;
             this.Size = new Size(121, 121);
             this.User = user;
             InitAll();
@@ -69,21 +73,30 @@ namespace zxcforum.core.controls
                 {
                     string sourceFilePath = openFileDialog.FileName;
                     string fileName = Path.GetFileName(sourceFilePath);
-                    string destinationFilePath = Path.Combine(DefaultPaths.AvatarsPath, fileName);
+                    string destinationFilePath = Path.Combine(!IsForProduct ? DefaultPaths.AvatarsPath : DefaultPaths.ProductsPath, fileName);
                     try
                     {
                         File.Copy(sourceFilePath, destinationFilePath, overwrite: true);
+                        if (!IsForProduct)
+                        {
+                            image = DefaultImages.GetAvatar(fileName);
+                            Avatar.Image = image;
+                            Kasutaja kasutaja = DBHandler.GetRecord<Kasutaja>(new List<WhereField>() { new WhereField("id", FormAppContext.CurrentUser.id.ToString()) });
+                            DBHandler.UpdateUserData(
+                                kasutaja,
+                                "pilt",
+                                fileName
+                                );
+                            FormAppContext.CurrentUser.picture = fileName;
+                            HeaderHandler.AvatarChanged();
+                        }
+                        else
+                        {
+                            image = DefaultImages.GetProductImage(fileName);
+                            Avatar.Image = image;
+                            onProductImage.Invoke(fileName);
+                         };
 
-                        image = DefaultImages.GetAvatar(fileName);
-                        Avatar.Image = image;
-                        Kasutaja kasutaja = DBHandler.GetRecord<Kasutaja>(new List<WhereField>() { new WhereField("id", FormAppContext.CurrentUser.id.ToString()) });
-                        DBHandler.UpdateUserData(
-                            kasutaja,
-                            "pilt",
-                            fileName
-                            );
-                        FormAppContext.CurrentUser.picture = fileName;
-                        HeaderHandler.AvatarChanged();
                     }
                     catch {
                         MessageBox.Show("unluck");
